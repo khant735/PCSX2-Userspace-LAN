@@ -1,27 +1,27 @@
-# PCSX2
+# PCSX2 Userspace LAN
 
-![Windows Build Status](https://img.shields.io/github/actions/workflow/status/PCSX2/pcsx2/windows_build_matrix.yml?label=%F0%9F%96%A5%EF%B8%8F%20Windows%20Builds)
-![Linux Build Status](https://img.shields.io/github/actions/workflow/status/PCSX2/pcsx2/linux_build_matrix.yml?label=%F0%9F%90%A7%20Linux%20Builds)
-![MacOS Build Status](https://img.shields.io/github/actions/workflow/status/PCSX2/pcsx2/macos_build_matrix.yml?label=%F0%9F%8D%8E%20MacOS%20Builds)
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/1f7c0d75fec74d6daa6adb084e5b4f71)](https://app.codacy.com/gh/PCSX2/pcsx2/dashboard?utm_source=github.com&utm_medium=referral&utm_content=PCSX2/pcsx2&utm_campaign=Badge_Grade)
-[![Discord Server](https://img.shields.io/discord/309643527816609793?color=%235CA8FA&label=PCSX2%20Discord&logo=discord&logoColor=white)](https://discord.com/invite/TCz3t9k)
+An experimental fork of [PCSX2](https://github.com/PCSX2/pcsx2), focused on extending PlayStation 2 DEV9 networking with a userspace virtual Ethernet backend.
 
-PCSX2 is a free and open-source PlayStation 2 (PS2) emulator. Its purpose is to emulate the PS2's hardware, using a combination of MIPS CPU [Interpreters](<https://en.wikipedia.org/wiki/Interpreter_(computing)>), [Recompilers](https://en.wikipedia.org/wiki/Dynamic_recompilation) and a [Virtual Machine](https://en.wikipedia.org/wiki/Virtual_machine) which manages hardware states and PS2 system memory. This allows you to play PS2 games on your PC, with many additional features and benefits.
+## Project Goals
 
-## Project Details
+- Enable local network communication between multiple PCSX2 emulator instances.
+- Provide a virtual Ethernet transport without requiring TAP/TUN devices, kernel network interfaces or elevated privileges.
+- Use Unix-domain sockets and a userspace Ethernet switch to exchange virtual network frames.
+- Support development, debugging and testing of PlayStation 2 LAN-enabled applications.
+- Maintain compatibility with upstream PCSX2 wherever practical.
 
-PCSX2 has been in development for more than 20 years. Past versions could only run a few public domain game demos, but newer versions can run most games at full speed, including popular titles such as Final Fantasy X and Devil May Cry 3. Visit the [PCSX2 compatibility list](https://pcsx2.net/compat/) to check the latest compatibility status of games (with more than 2500 titles tested).
+## Development Status
 
-Installers and binaries for both stable and nightly builds are available from [our website](https://pcsx2.net/downloads/).
+**Experimental — work in progress.**
 
-## System Requirements
+The custom DEV9 networking modifications are under development. The modified emulator has not yet completed compilation and end-to-end LAN communication testing.
 
-PCSX2 supports Windows, Linux, and Mac platforms. Our [setup documentation page](https://pcsx2.net/docs/setup/requirements) contains additional details on software and hardware requirements.
+The initial target is Linux x86-64, using PCSX2 v2.9.31 as the development baseline.
 
-Please note that a BIOS dump from a legitimately-owned PS2 console is required to use the emulator. For more information, visit [this page](https://pcsx2.net/docs/setup/bios/).
+## Acknowledgements
 
-## Contributing / Building
+Based on the open-source PCSX2 project. This is an independent, unofficial fork and is not affiliated with or endorsed by the PCSX2 development team.
 
-PCSX2 supports translation into other languages using [Crowdin](https://crowdin.com/project/pcsx2-emulator).
+Original project: https://github.com/PCSX2/pcsx2
 
-See the [Contribution Guide](https://pcsx2.net/docs/contributing/) for more info on how to contribute.
+The original PCSX2 copyright notices, licensing requirements and applicable third-party acknowledgements are retained.
