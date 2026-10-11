@@ -15,6 +15,9 @@
 #endif
 #include "pcap_io.h"
 #include "sockets.h"
+#if defined(__POSIX__)
+#include "userspace_lan.h"
+#endif
 
 #include "PacketReader/EthernetFrame.h"
 #include "PacketReader/IP/IP_Packet.h"
@@ -62,6 +65,18 @@ void ad_reset()
 
 NetAdapter* GetNetAdapter()
 {
+#if defined(__POSIX__)
+    const char* sw = getenv("PCSX2_USERSPACE_LAN_SOCKET");
+    if (sw && *sw)
+    {
+        auto* a = new UserspaceLanAdapter();
+        if (a->isInitialised())
+            return a;
+        delete a;
+        Console.Error("DEV9: userspace LAN initialization failed");
+        return nullptr;
+    }
+#endif
 	NetAdapter* na = nullptr;
 
 	switch (EmuConfig.DEV9.EthApi)
