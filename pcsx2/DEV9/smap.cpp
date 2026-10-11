@@ -331,8 +331,8 @@ u8 smap_read8(u32 addr)
 			DevCon.WriteLn("DEV9: SMAP_R_TXFIFO_FRAME_CNT read 8");
 			break;
 		case SMAP_R_RXFIFO_FRAME_CNT:
-			DevCon.WriteLn("DEV9: SMAP_R_RXFIFO_FRAME_CNT read 8");
-			break;
+			// Valid 8-bit register read; do not report it as an error.
+			return dev9Ru8(addr);
 
 		case SMAP_R_BD_MODE:
 			return dev9.bd_swap;
@@ -679,6 +679,15 @@ void smap_write16(u32 addr, u16 value)
 			dev9.irqcause &= ~value;
 			return;
 
+		case SMAP_R_RXFIFO_RD_PTR:
+		{
+			const u32 old_ptr = dev9Ru32(SMAP_R_RXFIFO_RD_PTR);
+			const u8 frames = dev9Ru8(SMAP_R_RXFIFO_FRAME_CNT);
+			dev9Ru16(addr) = value;
+			const u32 new_ptr = dev9Ru32(SMAP_R_RXFIFO_RD_PTR);
+			DevCon.WriteLn("DEV9 SMAP RX TRACE: RD_PTR write16 old=%04X new=%04X value=%04X frames=%u wr=%04X", old_ptr, new_ptr, value, frames, dev9.rxfifo_wr_ptr);
+			return;
+		}
 		case SMAP_R_TXFIFO_WR_PTR:
 			DevCon.WriteLn("DEV9: SMAP: SMAP_R_TXFIFO_WR_PTR 16bit write %x", value);
 			dev9Ru16(addr) = value;
