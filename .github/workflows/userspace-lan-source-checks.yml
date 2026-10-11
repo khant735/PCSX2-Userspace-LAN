@@ -1,0 +1,32 @@
+name: Userspace LAN source checks
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  source-checks:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout with submodules
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - name: Validate switch syntax
+        run: python3 -m py_compile tools/userspace-lan/switch.py
+      - name: Validate userspace backend integration
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s pcsx2/DEV9/userspace_lan.h
+          grep -Fq '#include "userspace_lan.h"' pcsx2/DEV9/net.cpp
+          grep -Fq 'PCSX2_USERSPACE_LAN_SOCKET' pcsx2/DEV9/net.cpp
+          grep -Fq 'SMAP RX TRACE' pcsx2/DEV9/smap.cpp
+          test -s COPYING.GPLv3
+      - name: Record source revision
+        run: git rev-parse HEAD
