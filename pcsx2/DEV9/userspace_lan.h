@@ -34,8 +34,20 @@ public:
     sockaddr_un r{}, l{};
     if (!address(remote,r) || !address(localPath,l)) return;
     local = localPath;
-    fd = socket(AF_UNIX, SOCK_DGRAM | SOCK_NONBLOCK | SOCK_CLOEXEC, 0);
+    fd = socket(AF_UNIX, SOCK_DGRAM, 0);
     if (fd < 0) return;
+    // macOS lacks Linux's SOCK_NONBLOCK and SOCK_CLOEXEC socket() flags.
+    // Configure the same properties portably after creating the socket.
+    const int currentFlags = fcntl(fd, F_GETFL, 0);
+    const int descriptorFlags = fcntl(fd, F_GETFD, 0);
+    if (currentFlags < 0 || descriptorFlags < 0 ||
+        fcntl(fd, F_SETFL, currentFlags | O_NONBLOCK) < 0 ||
+        fcntl(fd, F_SETFD, descriptorFlags | FD_CLOEXEC) < 0)
+    {
+      ::close(fd);
+      fd = -1;
+      return;
+    }
     unlink(local.c_str());
     if (bind(fd, reinterpret_cast<sockaddr*>(&l), sizeof(l)) != 0 ||
         connect(fd, reinterpret_cast<sockaddr*>(&r), sizeof(r)) != 0)
